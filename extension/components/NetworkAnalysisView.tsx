@@ -115,12 +115,12 @@ Provide specific, actionable insights based on the network data.`;
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 p-6">
-      <header className="mb-4">
+    <div className="flex flex-col h-full bg-gray-900">
+      <header className="p-6 pb-4 flex-shrink-0">
         <h2 className="text-xl font-semibold">Network Analysis Capture</h2>
         <p className="text-gray-400">Start a debugging session by capturing the network traffic of the active tab.</p>
       </header>
-      <div className="flex flex-col flex-1 gap-4">
+      <div className="flex flex-col flex-1 gap-4 px-6 pb-6 overflow-y-auto">
         <div className="flex flex-col gap-2">
           <label htmlFor="initial-query" className="text-sm font-medium text-gray-300">
             What is your initial question?
@@ -162,13 +162,13 @@ Provide specific, actionable insights based on the network data.`;
 
         {/* Display Captured Network Data */}
         {capturedData && capturedData.length > 0 ? (
-          <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-            {/* Network Requests List - Scrollable */}
-            <div className="bg-gray-800 rounded-lg p-4 flex-1 flex flex-col overflow-hidden">
+          <div className="flex flex-col gap-4">
+            {/* Network Requests List */}
+            <div className="bg-gray-800 rounded-lg p-4">
               <h3 className="text-lg font-semibold mb-3 text-green-400">
                 ✅ Captured {capturedData.length} Network Requests
               </h3>
-              <div className="space-y-2 overflow-y-auto flex-1">
+              <div className="space-y-2">
                 {capturedData.map((req, index) => (
                   <div key={index} className="bg-gray-700 p-3 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">

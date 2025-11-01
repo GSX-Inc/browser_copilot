@@ -4,7 +4,8 @@
 # Private documentation (keep local)
 DEVPOST_*.txt
 DEVPOST_*.md
-docs/screenshots/
+docs/
+final-chrome-manifest.md
 
 # Dependencies
 node_modules/
