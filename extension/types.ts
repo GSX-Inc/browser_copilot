@@ -1,5 +1,5 @@
 
-export type ViewMode = 'chat' | 'tab' | 'screen' | 'network' | 'debugging-chat' | 'account-verifier' | 'context-builder' | 'canvas' | 'kino' | 'nexus' | 'aegis';
+export type ViewMode = 'network' | 'context-builder' | 'canvas' | 'kino' | 'nexus' | 'aegis';
 
 export interface ChatMessage {
   role: 'user' | 'model';

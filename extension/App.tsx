@@ -1,12 +1,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
-import ChatView from './components/ChatView';
-import TabAnalysisView from './components/TabAnalysisView';
-import ScreenAnalysisView from './components/ScreenAnalysisView';
 import NetworkAnalysisView from './components/NetworkAnalysisView';
-import DebuggingChatView from './components/DebuggingChatView';
-import AccountVerifierView from './components/AccountVerifierView';
 import ContextBuilderView from './components/ContextBuilderView';
 import CanvasView from './components/CanvasView';
 import KinoView from './components/KinoView';
@@ -33,9 +28,7 @@ const SignInView = ({ handleSignIn, loading }: { handleSignIn: () => void, loadi
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [currentView, setCurrentView] = useState<ViewMode>('chat');
-  const [networkData, setNetworkData] = useState<any[] | null>(null);
-  const [initialQuery, setInitialQuery] = useState('');
+  const [currentView, setCurrentView] = useState<ViewMode>('network');
 
   useEffect(() => {
     // Listen for authentication state changes
@@ -54,36 +47,10 @@ export default function App() {
     });
   };
 
-  const handleNetworkDataCaptured = (data: any[], query: string) => {
-    setNetworkData(data);
-    setInitialQuery(query);
-    setCurrentView('debugging-chat');
-  };
-
-  const handleExitDebugging = () => {
-    setNetworkData(null);
-    setInitialQuery('');
-    setCurrentView('network');
-  };
-
   const ActiveView = useMemo(() => {
     switch (currentView) {
-      case 'tab':
-        return <TabAnalysisView />;
-      case 'screen':
-        return <ScreenAnalysisView />;
       case 'network':
-        return <NetworkAnalysisView onAnalysisComplete={handleNetworkDataCaptured} />;
-      case 'debugging-chat':
-        return networkData ? (
-          <DebuggingChatView
-            networkData={networkData}
-            initialQuery={initialQuery}
-            onExit={handleExitDebugging}
-          />
-        ) : null;
-      case 'account-verifier':
-        return <AccountVerifierView />;
+        return <NetworkAnalysisView onAnalysisComplete={() => {}} />;
       case 'context-builder':
         return <ContextBuilderView />;
       case 'canvas':
@@ -94,11 +61,10 @@ export default function App() {
         return <NexusView />;
       case 'aegis':
         return <AegisView />;
-      case 'chat':
       default:
-        return <ChatView />;
+        return <NetworkAnalysisView onAnalysisComplete={() => {}} />;
     }
-  }, [currentView, networkData, initialQuery]);
+  }, [currentView]);
 
   if (!user) {
     return <SignInView handleSignIn={handleSignIn} loading={loading} />;

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { ViewMode } from '../types.ts';
-import { ChatIcon, VideoIcon, DebugIcon, LogoIcon, TabIcon, VerifierIcon, CanvasIcon, FilmIcon, SpeedometerIcon, ShieldIcon } from './icons.tsx';
+import { DebugIcon, LogoIcon, CanvasIcon, FilmIcon, SpeedometerIcon, ShieldIcon, TabIcon } from './icons.tsx';
 
 interface SidebarProps {
   currentView: ViewMode;
@@ -43,34 +43,10 @@ export default function Sidebar({ currentView, setCurrentView }: SidebarProps) {
       </div>
       <nav>
         <NavButton
-          label="Chat"
-          icon={<ChatIcon />}
-          isActive={currentView === 'chat'}
-          onClick={() => setCurrentView('chat')}
-        />
-        <NavButton
-          label="Screen Analysis"
-          icon={<VideoIcon />}
-          isActive={currentView === 'screen'}
-          onClick={() => setCurrentView('screen')}
-        />
-        <NavButton
-          label="Tab Analysis"
-          icon={<TabIcon />}
-          isActive={currentView === 'tab'}
-          onClick={() => setCurrentView('tab')}
-        />
-        <NavButton
           label="Network Analysis"
           icon={<DebugIcon />}
           isActive={currentView === 'network'}
           onClick={() => setCurrentView('network')}
-        />
-        <NavButton
-          label="Account Verifier"
-          icon={<VerifierIcon />}
-          isActive={currentView === 'account-verifier'}
-          onClick={() => setCurrentView('account-verifier')}
         />
         <NavButton
           label="Context Builder"

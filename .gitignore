@@ -1,15 +1,16 @@
-# Documentation (keep private)
-*.md
+# Claude directory
+.claude/
+
+# Private documentation (keep local)
 DEVPOST_*.txt
 DEVPOST_*.md
-docs/
-.claude/
+docs/screenshots/
 
 # Dependencies
 node_modules/
 package-lock.json
 
-# Build outputs (will be generated)
+# Build outputs
 dist/
 
 # OS files
@@ -23,3 +24,6 @@ dist/
 # Temporary files
 *.tmp
 *.bak
+
+# Environment variables
+.env
