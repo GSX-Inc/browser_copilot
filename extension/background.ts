@@ -115,14 +115,30 @@ import { model } from './firebase';
   function handleStopNetworkAnalysis() {
     if (!debugState.target) return;
 
+    const capturedRequests = Array.from(debugState.requests.values());
+
     chrome.debugger.detach(debugState.target, () => {
       chrome.debugger.onEvent.removeListener(handleDebuggerEvent);
-      chrome.runtime.sendMessage({
-        action: "networkAnalysisResult",
-        data: Array.from(debugState.requests.values())
-      });
+
+      if (capturedRequests.length === 0) {
+        // No requests captured - user didn't reload page
+        console.log("[Network Analysis] No requests captured - page was not reloaded");
+        chrome.runtime.sendMessage({
+          action: "networkAnalysisResult",
+          data: null,
+          error: "No network requests captured. Did you reload the page? After clicking 'Start', you must reload the page (Ctrl+R / Cmd+R) to capture network traffic."
+        });
+      } else {
+        console.log("[Network Analysis] Captured", capturedRequests.length, "requests");
+        chrome.runtime.sendMessage({
+          action: "networkAnalysisResult",
+          data: capturedRequests
+        });
+      }
+
       debugState.target = null;
       debugState.requests.clear();
+      debugState.mode = null;
     });
   }
 

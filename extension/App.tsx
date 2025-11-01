@@ -28,7 +28,7 @@ const SignInView = ({ handleSignIn, loading }: { handleSignIn: () => void, loadi
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [currentView, setCurrentView] = useState<ViewMode>('network');
+  const [currentView, setCurrentView] = useState<ViewMode>('context-builder');
 
   useEffect(() => {
     // Listen for authentication state changes

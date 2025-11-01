@@ -43,12 +43,6 @@ export default function Sidebar({ currentView, setCurrentView }: SidebarProps) {
       </div>
       <nav>
         <NavButton
-          label="Network Analysis"
-          icon={<DebugIcon />}
-          isActive={currentView === 'network'}
-          onClick={() => setCurrentView('network')}
-        />
-        <NavButton
           label="Context Builder"
           icon={<TabIcon />}
           isActive={currentView === 'context-builder'}
@@ -77,6 +71,12 @@ export default function Sidebar({ currentView, setCurrentView }: SidebarProps) {
           icon={<ShieldIcon />}
           isActive={currentView === 'aegis'}
           onClick={() => setCurrentView('aegis')}
+        />
+        <NavButton
+          label="Network Analysis"
+          icon={<DebugIcon />}
+          isActive={currentView === 'network'}
+          onClick={() => setCurrentView('network')}
         />
       </nav>
       <div className="mt-auto text-xs text-gray-500">
