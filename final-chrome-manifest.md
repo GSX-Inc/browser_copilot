@@ -8,10 +8,10 @@ Make sure to completely replace the existing content of the file with this new c
 {
   "name": "com.my_app.cdp_host",
   "description": "Host for executing CDP commands for the AI Co-pilot",
-  "path": "/Users/decillionaire/Downloads/browser_copilot/native-host/host-app.js",
+  "path": "[YOUR_LOCAL_PATH/browser_copilot/native-host/host-app.js",
   "type": "stdio",
   "allowed_origins": [
-    "chrome-extension://emmbndflhdkdnnepfkgijdggafabdhhn/"
+    "chrome-extension://[YOUR _EXTENSION_ID]/"
   ]
 }
 ```
