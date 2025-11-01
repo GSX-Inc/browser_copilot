@@ -1,0 +1,18 @@
+{
+  "devDependencies": {
+    "esbuild": "^0.25.11"
+  },
+  "dependencies": {
+    "firebase": "^10.12.2",
+    "html2canvas": "^1.4.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "copy-static": "cp index.html capture.html styles.css tailwind.config.js tailwindcss.js manifest.json dist/",
+    "build-content-scripts": "npx esbuild content-scripts/element-capturer.ts content-scripts/accessibility-analyzer.ts content-scripts/live-video-capturer.ts --bundle --outdir=dist/content-scripts --format=iife",
+    "build": "npm run clean && npm run build-content-scripts && npx esbuild App.tsx index.tsx background.ts 'components/*.tsx' 'utils/*.ts' firebase.ts capture.js --bundle --outdir=dist --format=esm --splitting --jsx=automatic && npm run copy-static",
+    "build:prod": "npm run clean && npm run build-content-scripts && npx esbuild App.tsx index.tsx background.ts 'components/*.tsx' 'utils/*.ts' firebase.ts capture.js --bundle --outdir=dist --format=esm --splitting --jsx=automatic --minify && npm run copy-static"
+  }
+}

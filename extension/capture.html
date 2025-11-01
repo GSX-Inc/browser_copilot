@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Camera Capture</title>
+  <style>
+    body { margin: 0; background: #111827; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; color: white; font-family: sans-serif; }
+    video { width: 100%; max-width: 400px; border-radius: 8px; }
+    p { font-size: 14px; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <video id="video" autoplay playsinline muted></video>
+  <p>Capturing video for AI analysis...</p>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <script src="capture.js"></script>
+</body>
+</html>

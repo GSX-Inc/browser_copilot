@@ -1,0 +1,25 @@
+# Documentation (keep private)
+*.md
+DEVPOST_*.txt
+DEVPOST_*.md
+docs/
+.claude/
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs (will be generated)
+dist/
+
+# OS files
+.DS_Store
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.bak

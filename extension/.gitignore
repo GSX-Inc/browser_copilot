@@ -1,0 +1,9 @@
+# Firebase config
+firebaseConfig.js
+
+# Node modules
+node_modules
+
+# Build output
+dist
+.DS_Store
