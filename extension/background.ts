@@ -1050,6 +1050,37 @@ Respond with JSON:
         fix = JSON.parse(responseText);
         fix.preview = false;
 
+        // BUILT-IN AI: Try Writer API to enhance code explanation
+        try {
+          const writerResult = await chrome.scripting.executeScript({
+            target: { tabId: (await chrome.tabs.query({active: true}))[0].id! },
+            func: async (code: string, explanation: string) => {
+              try {
+                if (typeof window !== 'undefined' && 'ai' in window && (window as any).ai?.writer) {
+                  console.log('[Nexus] Using Writer API to enhance explanation');
+                  const writer = await (window as any).ai.writer.create({ tone: 'professional' });
+                  const enhanced = await writer.write(
+                    `Explain this performance optimization code in simple terms: ${code}. Current explanation: ${explanation}`
+                  );
+                  await writer.destroy();
+                  return { hasWriterAPI: true, enhanced };
+                }
+                return { hasWriterAPI: false };
+              } catch (e) {
+                return { hasWriterAPI: false };
+              }
+            },
+            args: [fix.code, fix.explanation]
+          });
+
+          if (writerResult && writerResult[0]?.result?.hasWriterAPI) {
+            fix.aiEnhancedExplanation = writerResult[0].result.enhanced;
+            console.log('[Nexus] Writer API enhanced explanation');
+          }
+        } catch (writerError) {
+          console.log('[Nexus] Writer API not available');
+        }
+
         // Ensure code is concise (if it's too long, likely a template)
         if (fix.code && fix.code.length > 500) {
           console.warn('[Nexus] Code fix too long, extracting relevant part...');

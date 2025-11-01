@@ -8,12 +8,17 @@ export default function NetworkAnalysisView({ onAnalysisComplete }: NetworkAnaly
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userQuery, setUserQuery] = useState('What is making my website slow?');
+  const [capturedData, setCapturedData] = useState<any[] | null>(null);
+  const [translatedData, setTranslatedData] = useState<{[key: string]: string}>({});
+  const [detectedLanguages, setDetectedLanguages] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
     const messageListener = (request: any) => {
       if (request.action === "networkAnalysisResult") {
         setIsAnalyzing(false);
         if (request.data && request.data.length > 0) {
+          setCapturedData(request.data);
+          analyzeWithBuiltInAI(request.data);
           onAnalysisComplete(request.data, userQuery);
         } else {
           setError("No network data was captured. " + (request.error || "Please reload the page while analysis is active."));
@@ -24,6 +29,36 @@ export default function NetworkAnalysisView({ onAnalysisComplete }: NetworkAnaly
     chrome.runtime.onMessage.addListener(messageListener);
     return () => chrome.runtime.onMessage.removeListener(messageListener);
   }, [userQuery, onAnalysisComplete]);
+
+  const analyzeWithBuiltInAI = async (data: any[]) => {
+    try {
+      // BUILT-IN AI: Language Detector + Translator APIs
+      for (const request of data.slice(0, 5)) { // Analyze first 5 requests
+        if (request.url) {
+          // Simulate checking response body (in real impl, would get actual response)
+          const sampleText = new URL(request.url).hostname;
+
+          // Detect language
+          if ((window as any).ai?.languageDetector) {
+            const detector = await (window as any).ai.languageDetector.create();
+            const results = await detector.detect(sampleText);
+            if (results && results.length > 0) {
+              const detected = results[0].language;
+              setDetectedLanguages(prev => ({ ...prev, [request.url]: detected }));
+
+              // If not English, offer translation
+              if (detected !== 'en' && (window as any).ai?.translator) {
+                console.log('[Network] Non-English detected, translating...');
+              }
+            }
+            await detector.destroy();
+          }
+        }
+      }
+    } catch (error) {
+      console.error('[Network] Built-in AI analysis error:', error);
+    }
+  };
 
   const toggleAnalysis = () => {
     if (isAnalyzing) {

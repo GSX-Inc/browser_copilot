@@ -4,6 +4,14 @@ import Loader from './Loader';
 import Toast from './Toast';
 import { speak, stopSpeaking, prepareTextForSpeech } from '../utils/speech-utils';
 
+// Declare LanguageModel global (Chrome Built-in AI Prompt API)
+declare global {
+  const LanguageModel: {
+    create: (options?: any) => Promise<any>;
+    params: () => Promise<any>;
+  };
+}
+
 type KinoTab = 'live-qa' | 'transcript' | 'summary' | 'settings';
 
 interface ToastState {
@@ -164,7 +172,7 @@ export default function KinoView() {
     }
   };
 
-  const askQuestion = () => {
+  const askQuestion = async () => {
     if (!question.trim()) {
       setError('Please enter a question');
       return;
@@ -179,6 +187,62 @@ export default function KinoView() {
     setError(null);
     setCurrentAnswer('');
 
+    // BUILT-IN AI: Try Prompt API with multimodal first (on-device)
+    try {
+      if (typeof LanguageModel !== 'undefined') {
+        console.log('[Kino] Using Prompt API (LanguageModel) with multimodal image input');
+
+        // Convert dataURL to Blob
+        const response = await fetch(currentFrame.dataUrl);
+        const blob = await response.blob();
+
+        // Create session with image support
+        const session = await LanguageModel.create({
+          expectedInputs: [{ type: "image" }]
+        });
+
+        // Send question with image
+        await session.append([{
+          role: 'user',
+          content: [
+            { type: 'text', value: question },
+            { type: 'image', value: blob }
+          ]
+        }]);
+
+        const answer = await session.prompt('');
+        await session.destroy();
+
+        console.log('[Kino] Prompt API (on-device) analysis complete');
+
+        // Add to history
+        const qa = {
+          question,
+          answer,
+          frameTimestamp: currentFrame.timestamp,
+          timestamp: Date.now()
+        };
+        setQaHistory(prev => [...prev, qa]);
+        setLoading(false);
+
+        // Speak if enabled
+        const currentSettings = settingsRef.current;
+        if (currentSettings.enableAudioDescription) {
+          const speechText = answer.substring(0, 500);
+          speak(speechText, {
+            rate: currentSettings.voiceRate,
+            pitch: currentSettings.voicePitch,
+            volume: currentSettings.voiceVolume
+          });
+        }
+
+        return; // Success with on-device
+      }
+    } catch (promptError) {
+      console.log('[Kino] Prompt API not available, using cloud fallback:', promptError);
+    }
+
+    // Fallback to cloud Gemini
     chrome.runtime.sendMessage({
       action: 'kino-analyze-frame',
       payload: {

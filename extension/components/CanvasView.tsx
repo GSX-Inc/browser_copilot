@@ -30,6 +30,7 @@ export default function CanvasView() {
   // Analysis state
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
   const [analysisPrompt, setAnalysisPrompt] = useState('');
+  const [aiEnhancedSuggestions, setAiEnhancedSuggestions] = useState<{[key: number]: string}>({});
 
   // Generator state
   const [generatedPalette, setGeneratedPalette] = useState<ColorPalette | null>(null);
