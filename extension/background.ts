@@ -36,16 +36,46 @@ import { model } from './firebase';
     // Keeping it for potential future use or refactoring.
   }
 
-  function handleStartNetworkAnalysis() {
-    debugState.mode = 'generic';
-    // For generic analysis, create a new tab to ensure we don't attach to a protected URL
-    chrome.tabs.create({ url: 'about:blank', active: true }, (tab) => {
-      if (!tab || !tab.id) {
-        console.error("Could not create a new tab for debugging.");
+  async function handleStartNetworkAnalysis() {
+    try {
+      debugState.mode = 'generic';
+
+      // Get the current active tab
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+      if (!tab || !tab.id || !tab.url) {
+        console.error("[Network Analysis] No active tab found");
+        chrome.runtime.sendMessage({
+          action: "networkAnalysisResult",
+          data: null,
+          error: "No active tab found. Please navigate to a website first."
+        });
         return;
       }
+
+      // Don't attach to Chrome internal pages
+      if (tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
+        chrome.runtime.sendMessage({
+          action: "networkAnalysisResult",
+          data: null,
+          error: "Cannot analyze Chrome internal pages. Please navigate to a regular website."
+        });
+        return;
+      }
+
+      console.log("[Network Analysis] Starting analysis on current tab:", tab.url);
+
+      // Attach debugger to current tab
       attachDebugger({ tabId: tab.id });
-    });
+
+    } catch (error) {
+      console.error("[Network Analysis] Error:", error);
+      chrome.runtime.sendMessage({
+        action: "networkAnalysisResult",
+        data: null,
+        error: "Failed to start network analysis"
+      });
+    }
   }
 
   function handleStartVerification(targetConfig: any) {
